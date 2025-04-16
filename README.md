@@ -12,7 +12,7 @@
 
 1.  **Connect to the Production Server via SSH:**
     ```bash
-    ssh forge@[YOUR_PRODUCTION_SERVER_IP]
+    ssh xxxxxx@[YOUR_PRODUCTION_SERVER_IP]
     ```
 
 2.  **(If needed) Install `bc`:**
