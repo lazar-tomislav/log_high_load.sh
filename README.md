@@ -1,7 +1,3 @@
-Okay, here are the instructions translated into English and formatted in Markdown.
-
----
-
 ## Deploying Monitoring Scripts and Configuration to Production Server
 
 **IMPORTANT NOTE FOR PRODUCTION SERVER:**
@@ -166,4 +162,3 @@ The production server is now equipped with the same diagnostic tools. Monitor th
 *   `/var/log/mysql/mysql-slow.log` (Slow SQL queries)
 *   Nginx access/error logs (Traffic context)
 
-Good luck with the setup on production! Let me know the results or if you get stuck.
