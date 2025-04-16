@@ -162,3 +162,50 @@ The production server is now equipped with the same diagnostic tools. Monitor th
 *   `/var/log/mysql/mysql-slow.log` (Slow SQL queries)
 *   Nginx access/error logs (Traffic context)
 
+---
+
+### Initial Testing (Optional but Recommended)
+
+After setting everything up, you can perform a quick test to ensure the `log_high_load.sh` script and its cron job are functioning correctly. **Remember to revert the threshold afterwards!**
+
+1.  **Check Current Load Average:**
+    Connect via SSH and run the `uptime` command:
+    ```bash
+    uptime
+    ```
+    Note the first number after "load average:" (the 1-minute average). In your case, it's `0.01`.
+
+2.  **Temporarily Lower the Threshold:**
+    Edit the script:
+    ```bash
+    sudo nano /usr/local/bin/log_high_load.sh
+    ```
+    Find the `LOAD_THRESHOLD` line and change its value to something lower than your current 1-minute load average. For example, use `0.00` to guarantee it triggers:
+    ```bash
+    LOAD_THRESHOLD="0.00" # <-- TEMPORARY TEST VALUE!
+    ```
+    Save and close (`Ctrl+X`, `Y`, `Enter`).
+
+3.  **Wait 1-2 Minutes:**
+    Allow time for the `cron` daemon to execute the script at least once.
+
+4.  **Check the Log File:**
+    Verify that the log file was created and that entries were written:
+    ```bash
+    sudo ls -l /var/log/process_snapshots.log
+    sudo tail -n 50 /var/log/process_snapshots.log
+    ```
+    You should see entries starting with `--- High Load Detected at...`. If the file doesn't exist or is empty, check the cron runner log for errors: `sudo tail /var/log/cron_script_runner.log`.
+
+5.  **!! CRITICAL STEP: Restore the Threshold !!**
+    **Once you've confirmed the script works, immediately edit the script again and set the `LOAD_THRESHOLD` back to the appropriate value for your production server** (based on 1.5x-2x your CPU cores, e.g., `4.0` for 2 cores, `6.0` or `8.0` for 4 cores, etc.).
+    ```bash
+    sudo nano /usr/local/bin/log_high_load.sh
+    ```
+    Change the line back to your calculated production threshold:
+    ```bash
+    LOAD_THRESHOLD="4.0" # <-- RESTORED PRODUCTION VALUE (Example for 2 cores)
+    ```
+    Save and close.
+
+This test confirms the mechanism is working without waiting for a real high-load event. Now the script is ready to capture data during actual incidents.
